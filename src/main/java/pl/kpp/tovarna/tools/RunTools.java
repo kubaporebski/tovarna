@@ -15,7 +15,7 @@ import java.util.List;
 @Component
 public class RunTools {
 
-    private final static Logger logger = LoggerFactory.getLogger(RunTools.class);
+    private final static Logger logger = Loggers.forEnclosingClass();
 
     private final ProductRepository productRepository;
     private final RequirementRepository requirementRepository;
@@ -41,24 +41,6 @@ public class RunTools {
         productRepository.deleteAll();
 
         logger.info("Adding some sample data... ");
-
-        /*insert into product (Name, Description) values
-('Coal', 'For energy'),
-('Iron ore', 'Material for most products'),
-('Wood', 'For building'),
-('Plastic', 'Another building part for most products');
-
-insert into product(Name, Description) values
-('Coal plant', 'Good old coal electric plant'),
-('Cell phone', 'A smartphone');
-
-
-insert into requirement(ProductId, RequirementId) values
-((select id from product where name='Coal plant'), (select id from product where name='Coal')),
-((select id from product where name='Cell phone'), (select id from product where name='Coal plant')),
-((select id from product where name='Cell phone'), (select id from product where name='Iron ore')),
-((select id from product where name='Cell phone'), (select id from product where name='Plastic'));
-*/
         var products = List.of(
                 prod("Coal", "Energy basic source"), prod("Iron ore", "Source of metals"),
                 prod("Wood", "For good ol' building"), prod("Plastic", "Universal"),

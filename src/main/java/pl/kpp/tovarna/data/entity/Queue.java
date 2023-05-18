@@ -24,6 +24,10 @@ public class Queue {
 
     }
 
+    public Queue(BuildState state) {
+        this.state = state;
+    }
+
     public int getId() {
         return id;
     }
@@ -46,5 +50,10 @@ public class Queue {
 
     public void setState(BuildState state) {
         this.state = state;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("[Queue %s. Product to build: %s]", state.name(), built.getName());
     }
 }
