@@ -51,4 +51,9 @@ public class Requirement {
     public void setRequired(Product required) {
         this.required = required;
     }
+
+    @Override
+    public String toString() {
+        return String.format("[To build %s you require %s]", produced, required);
+    }
 }

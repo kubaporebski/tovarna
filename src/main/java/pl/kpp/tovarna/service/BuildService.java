@@ -2,6 +2,7 @@ package pl.kpp.tovarna.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ public class BuildService {
     private final RequirementRepository requirementRepository;
     private final QueueRepository queueRepository;
 
+    @Autowired
     public BuildService(RequirementRepository requirementRepository, QueueRepository queueRepository) {
         this.requirementRepository = requirementRepository;
         this.queueRepository = queueRepository;
@@ -34,7 +36,12 @@ public class BuildService {
             q.setState(BuildState.IN_PROGRESS);
             queueRepository.save(q);
 
+            var reqs = requirementRepository.findByProduced(q.getBuilt());
 
+            reqs.stream().forEach(req -> {
+                // req.getRequired()
+            });
+            logger.info("Requirements are: " + reqs);
 
         });
 

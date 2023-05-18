@@ -47,4 +47,9 @@ public class Product {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    @Override
+    public String toString() {
+        return String.format("[Product %s - %s]", name, description);
+    }
 }
