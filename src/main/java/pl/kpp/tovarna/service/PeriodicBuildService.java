@@ -2,22 +2,19 @@ package pl.kpp.tovarna.service;
 
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import pl.kpp.tovarna.TovarnaApplication;
+import pl.kpp.tovarna.AppConfig;
 import pl.kpp.tovarna.data.DataFacade;
-import pl.kpp.tovarna.data.classes.BuildState;
 import pl.kpp.tovarna.data.entity.Queue;
-import pl.kpp.tovarna.data.repo.QueueRepository;
-import pl.kpp.tovarna.data.repo.RequirementRepository;
 import pl.kpp.tovarna.process.BuildManager;
 import pl.kpp.tovarna.tools.Loggers;
-
-import javax.xml.crypto.Data;
+import pl.kpp.tovarna.tools.RunTools;
 
 @Service
-public class BuildService {
+@Profile(AppConfig.Profiles.PERIODIC)
+public class PeriodicBuildService implements IBuildService {
 
     private final static Logger logger = Loggers.forEnclosingClass();
 
@@ -25,16 +22,20 @@ public class BuildService {
     private final BuildManager buildManager;
 
     @Autowired
-    public BuildService(DataFacade dataFacade, BuildManager buildManager) {
+    public PeriodicBuildService(DataFacade dataFacade, BuildManager buildManager) {
         this.dataFacade = dataFacade;
         this.buildManager = buildManager;
     }
 
     @Scheduled(fixedDelay = 2500)
     public void runBuildQueue() {
+
+        if (!RunTools.isReady)
+            return;
+
         logger.info("Runnin' buildin' queue... ");
         dataFacade.getQueueRepository()
-                .findByState(BuildState.NEW)
+                .lookForReadyToProcess()
                 .forEach(this::runBuildQueueItem);
     }
 

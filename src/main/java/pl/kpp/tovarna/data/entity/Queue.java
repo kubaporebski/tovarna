@@ -20,12 +20,21 @@ public class Queue {
     @Convert(converter = BuildState.BuildStateConverter.class)
     BuildState state;
 
+    @OneToOne
+    @JoinColumn(name = "ParentQueueId")
+    private Queue parentQueue;
+
     public Queue() {
 
     }
 
     public Queue(BuildState state) {
         this.state = state;
+    }
+
+    public Queue(Product productToBuild, BuildState buildState) {
+        this.built = productToBuild;
+        this.state = buildState;
     }
 
     public int getId() {
@@ -52,8 +61,18 @@ public class Queue {
         this.state = state;
     }
 
+    public void setParentQueue(Queue queueItem) {
+        this.parentQueue = queueItem;
+    }
+
+    public Queue getParentQueue() {
+        return parentQueue;
+    }
+
     @Override
     public String toString() {
         return String.format("[Queue %s. Product to build: %s]", state.name(), built.getName());
     }
+
+
 }

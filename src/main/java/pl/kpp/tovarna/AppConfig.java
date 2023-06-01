@@ -8,8 +8,9 @@ import org.springframework.scheduling.annotation.Scheduled;
 @EnableScheduling
 public class AppConfig {
 
+    public static class Profiles {
+        public final static String PERIODIC = "periodic";
 
-
-
-
+        public final static String KAFFKA = "kaffka";
+    }
 }

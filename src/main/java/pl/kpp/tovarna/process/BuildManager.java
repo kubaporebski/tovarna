@@ -45,14 +45,20 @@ public class BuildManager {
         } else {
 
             logger.info("Required products: " + reqs);
-
-            queueItem.setState(BuildState.WAIT_FOR_REQUIREMENT);
-            dataFacade.getQueueRepository().save(queueItem);
-
             reqs.forEach(req -> {
+                var required = req.getRequired();
+
+                var requiredInInventory = dataFacade.getInventoryRepository().findByObjectName(required.getName());
+                if (requiredInInventory.isPresent())
+                    return;
+
+                queueItem.setState(BuildState.WAIT_FOR_REQUIREMENT);
+                dataFacade.getQueueRepository().save(queueItem);
+
                 var newQueueItem = new Queue();
-                newQueueItem.setBuilt(req.getRequired());
+                newQueueItem.setBuilt(required);
                 newQueueItem.setState(BuildState.NEW);
+                newQueueItem.setParentQueue(queueItem);
                 dataFacade.getQueueRepository().save(newQueueItem);
             });
         }
