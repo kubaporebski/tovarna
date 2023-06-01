@@ -6,6 +6,7 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
 import pl.kpp.tovarna.tools.Loggers;
 import pl.kpp.tovarna.tools.RunTools;
 
@@ -23,10 +24,8 @@ public class TovarnaApplication implements ApplicationRunner {
 
 	@Override
 	public void run(ApplicationArguments args) throws Exception {
-
 		runTools.prepareSampleDatabase();
-
 		logger.info("TOVARNA is UP and RUNNING!!!");
-
 	}
+
 }
