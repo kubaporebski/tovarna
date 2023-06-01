@@ -18,6 +18,6 @@ public interface QueueRepository extends JpaRepository<Queue, Integer> {
     Iterable<Queue> lookForReadyToProcess();
 
     @Modifying
-    @Query("Delete from Queue q")
+    @Query(value = "Truncate Table Queue", nativeQuery = true)
     void deleteAllUnrestricted();
 }

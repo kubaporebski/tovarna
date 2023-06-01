@@ -10,6 +10,8 @@ import pl.kpp.tovarna.data.entity.Queue;
 import pl.kpp.tovarna.data.repo.QueueRepository;
 import pl.kpp.tovarna.tools.Loggers;
 
+import java.util.Optional;
+
 @Component
 public class BuildManager {
 
@@ -49,8 +51,14 @@ public class BuildManager {
                 var required = req.getRequired();
 
                 var requiredInInventory = dataFacade.getInventoryRepository().findByObjectName(required.getName());
-                if (requiredInInventory.isPresent())
+                if (requiredInInventory.size() > 0) {
+                    Optional.ofNullable(queueItem.getParentQueue())
+                            .ifPresent(parentQueueItem -> {
+                                parentQueueItem.setState(BuildState.DONE);
+                                dataFacade.getQueueRepository().save(parentQueueItem);
+                            });
                     return;
+                }
 
                 queueItem.setState(BuildState.WAIT_FOR_REQUIREMENT);
                 dataFacade.getQueueRepository().save(queueItem);
