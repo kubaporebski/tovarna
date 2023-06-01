@@ -4,24 +4,23 @@ import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 
-//@Entity
-//@Table
+@Entity
+@Table
 public class Inventory {
-/*
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Id")
     int id;
 
     @ManyToOne
-    @Column(name = "ProductId", nullable = false)
+    @JoinColumn(name = "ProductId", nullable = false)
     Product object;
 
     @Column(name = "InsertDate", nullable = false)
     LocalDateTime insertDate;
 
     public Inventory() {
-
+        setInsertDate(LocalDateTime.now());
     }
 
     public int getId() {
@@ -47,5 +46,4 @@ public class Inventory {
     public void setInsertDate(LocalDateTime insertDate) {
         this.insertDate = insertDate;
     }
-    */
 }

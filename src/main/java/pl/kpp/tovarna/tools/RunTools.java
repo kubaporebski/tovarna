@@ -55,7 +55,7 @@ public class RunTools {
         dataFacade.getRequirementRepository().saveAll(requirements);
     }
 
-    @Scheduled(fixedRate = 4000)
+    @Scheduled(fixedRate = 5000)
     public void addItemToQueueFromTimeToTime() {
         logger.info("Let's try to add a new item to the queue");
         if (Math.random() < 0.5)

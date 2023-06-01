@@ -1,9 +1,11 @@
 package pl.kpp.tovarna.process;
 
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import pl.kpp.tovarna.data.DataFacade;
 import pl.kpp.tovarna.data.classes.BuildState;
+import pl.kpp.tovarna.data.entity.Inventory;
 import pl.kpp.tovarna.data.entity.Queue;
 import pl.kpp.tovarna.data.repo.QueueRepository;
 import pl.kpp.tovarna.tools.Loggers;
@@ -15,6 +17,7 @@ public class BuildManager {
 
     private final DataFacade dataFacade;
 
+    @Autowired
     public BuildManager(DataFacade dataFacade) {
         this.dataFacade = dataFacade;
     }
@@ -23,17 +26,35 @@ public class BuildManager {
         queueItem.setState(BuildState.IN_PROGRESS);
         dataFacade.getQueueRepository().save(queueItem);
 
-        var reqs = dataFacade.getRequirementRepository().findByProduced(queueItem.getBuilt());
+        var productToBuild = queueItem.getBuilt();
+        var reqs = dataFacade.getRequirementRepository().findByProduced(productToBuild);
 
-        reqs.stream().forEach(req -> {
-            // req.getRequired()
-        });
-        logger.info("Requirements are: " + reqs);
+        logger.info("Will build: " + productToBuild);
 
         if (reqs.size() == 0) {
-            // put it inventory
+            logger.info("No requirements to build it, so I'm putting it into the inventory right away.");
+
+            // put it into the inventory
+            var inventoryItem = new Inventory();
+            inventoryItem.setObject(queueItem.getBuilt());
+            dataFacade.getInventoryRepository().save(inventoryItem);
+
+            queueItem.setState(BuildState.DONE);
+            dataFacade.getQueueRepository().save(queueItem);
+
         } else {
-            //
+
+            logger.info("Required products: " + reqs);
+
+            queueItem.setState(BuildState.WAIT_FOR_REQUIREMENT);
+            dataFacade.getQueueRepository().save(queueItem);
+
+            reqs.forEach(req -> {
+                var newQueueItem = new Queue();
+                newQueueItem.setBuilt(req.getRequired());
+                newQueueItem.setState(BuildState.NEW);
+                dataFacade.getQueueRepository().save(newQueueItem);
+            });
         }
     }
 }
